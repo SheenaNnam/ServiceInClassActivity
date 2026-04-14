@@ -8,6 +8,8 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.Button
 import android.widget.TextView
 
@@ -45,7 +47,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val start_stopButton = findViewById<Button>(R.id.startButton)
+        //val start_stopButton = findViewById<Button>(R.id.startButton)
         textView = findViewById<TextView>(R.id.textView)
 
         bindService(
@@ -53,29 +55,62 @@ class MainActivity : AppCompatActivity() {
             serviceConnection,
             BIND_AUTO_CREATE)
 
-        findViewById<Button>(R.id.startButton).setOnClickListener {
-            if (isConnected){
+//        findViewById<Button>(R.id.startButton).setOnClickListener {
+//            if (isConnected){
+//
+//                if(bindTimer.isRunning && !bindTimer.paused) {
+//                    start_stopButton.text = "Unpause"
+//                } else{
+//                    start_stopButton.text = "Pause"
+//                }
+//                bindTimer.pause()
+//
+//                if (!bindTimer.isRunning && !bindTimer.paused){
+//                    bindTimer.start(30)
+//                }
+//
+//            }
+//
+//        }
+//
+//        findViewById<Button>(R.id.stopButton).setOnClickListener {
+//            if (isConnected){
+//                bindTimer.stop()
+//                start_stopButton.text = "Start"
+//            }
+//        }
+    }
 
-                if(bindTimer.isRunning && !bindTimer.paused) {
-                    start_stopButton.text = "Unpause"
-                } else{
-                    start_stopButton.text = "Pause"
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.main, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+
+        when (item.itemId){
+
+            R.id.play ->
+                {
+                    if (bindTimer.isRunning && !bindTimer.paused) {
+                        item.setIcon(android.R.drawable.ic_media_play)
+                    } else {
+                        item.setIcon(android.R.drawable.ic_media_pause)
+                    }
+                    bindTimer.pause()
+
+                    if (!bindTimer.isRunning && !bindTimer.paused){
+                        bindTimer.start(30)
+                    }
                 }
-                bindTimer.pause()
-
-                if (!bindTimer.isRunning && !bindTimer.paused){
-                    bindTimer.start(30)
+            R.id.stop ->{
+                if (isConnected) {
+                    bindTimer.stop()
+                    item.setIcon(android.R.drawable.ic_media_play)
                 }
-
-            }
-
-        }
-        
-        findViewById<Button>(R.id.stopButton).setOnClickListener {
-            if (isConnected){
-                bindTimer.stop()
-                start_stopButton.text = "Start"
             }
         }
+
+        return super.onOptionsItemSelected(item)
     }
 }
